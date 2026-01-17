@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wind Power Live Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<h2>Cloud-Based Wind Power Forecasting</h2>
+
+<canvas id="chart" width="600"></canvas>
+
+<script>
+let labels = [];
+let actual = [];
+let predicted = [];
+
+const chart = new Chart(document.getElementById("chart"), {
+    type: "line",
+    data: {
+        labels: labels,
+        datasets: [
+            { label: "Actual Power (kW)", data: actual },
+            { label: "Predicted Power (kW)", data: predicted }
+        ]
+    }
+});
+
+function updateChart() {
+    fetch("/api/predict")
+        .then(res => res.json())
+        .then(data => {
+            const time = new Date().toLocaleTimeString();
+            labels.push(time);
+            actual.push(data.mean_actual);
+            predicted.push(data.mean_predicted);
+
+            if (labels.length > 10) {
+                labels.shift();
+                actual.shift();
+                predicted.shift();
+            }
+
+            chart.update();
+        });
+}
+
+setInterval(updateChart, 10000); // every 10 sec
+</script>
+
+</body>
+</html>
