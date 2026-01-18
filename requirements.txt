@@ -1,8 +1,8 @@
-flask
+streamlit
+gdown
 pandas
 numpy
 scikit-learn
 matplotlib
 seaborn
-gunicorn
 python-dateutil
